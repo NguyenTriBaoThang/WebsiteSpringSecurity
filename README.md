@@ -7,7 +7,7 @@
 ✏ The team includes: Nguyễn Tri Bão Thắng - 2180601452.
 </p>
 <p align="justify">
-🚀 Team name is: TeamTD.
+🚀 Team name is: TeamBT.
 </p>
 
 ### Contributor
