@@ -35,6 +35,8 @@ public class User {
     @NotBlank(message = "Tên của bạn không được để trống")
     private String name;
 
+    private String resetPasswordToken;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Book> books;
 

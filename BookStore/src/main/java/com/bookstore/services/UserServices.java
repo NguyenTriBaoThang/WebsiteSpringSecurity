@@ -5,6 +5,7 @@ import com.bookstore.entity.User;
 import com.bookstore.repository.IRoleRepository;
 import com.bookstore.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,6 +18,13 @@ public class UserServices {
 
     @Autowired
     private IRoleRepository roleRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
 
     public void save(User user){
         userRepository.save(user);
@@ -31,15 +39,31 @@ public class UserServices {
         Long userId = userRepository.getUserIdByUserName(username);
         Long roleId = roleRepository.getRoleIdByName(roleName);
         if(roleId != 0 && userId != 0){
-            userRepository.addRoleToUser(userId, roleId);
+            userRepository.updateUserRole(userId, roleId);
         }
     }
 
     public List<Role> getRolesByUsername(String username) {
-        User user = userRepository.findByUsername(username);
+        return userRepository.findRolesByUsername(username);
+    }
+
+    public boolean updateResetPasswordToken(String token, String email) {
+        User user = userRepository.findByEmail(email);
         if (user != null) {
-            return user.getRoles();
+            user.setResetPasswordToken(token);
+            userRepository.save(user);
+            return true;
         }
-        return List.of();
+        return false;
+    }
+
+    public User getByResetPasswordToken(String token) {
+        return userRepository.findByResetPasswordToken(token);
+    }
+
+    public void updatePassword(User user, String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setResetPasswordToken(null);
+        userRepository.save(user);
     }
 }

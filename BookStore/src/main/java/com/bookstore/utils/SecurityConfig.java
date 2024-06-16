@@ -64,7 +64,7 @@ public class SecurityConfig {
             Exception {
         return http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers( "/css/**", "/js/**", "/", "/register",
+                        .requestMatchers( "/css/**", "/js/**", "/", "/register", "/reset-password", "/forgot-password",
                                 "/error")
                         .permitAll()
                         .requestMatchers( "/books/edit", "/books/delete")
@@ -78,6 +78,11 @@ public class SecurityConfig {
                         .requestMatchers("/admin", "/admin/manage-roles")
                         .hasAnyAuthority("ADMIN")
                         .anyRequest().authenticated()
+                )
+                .oauth2Login(oauth2Login ->
+                        oauth2Login
+                                .loginPage("/login")
+                                .defaultSuccessUrl("/", true)
                 )
                 .logout(logout -> logout.logoutUrl("/logout")
                         .logoutSuccessUrl("/login")
