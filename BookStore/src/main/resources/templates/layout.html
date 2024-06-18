@@ -41,6 +41,14 @@
           </li>
         </ul>
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item d-flex align-items-center" sec:authorize="isAuthenticated()">
+                        <span class="navbar-text text-white">
+                            Xin chào,
+                            <a th:href="@{/profile}" class="text-white" style="margin-right: 20px;">
+                                <span sec:authentication="name"></span>
+                            </a>
+                        </span>
+                    </li>
           <li class="nav-item" sec:authorize="isAuthenticated()">
             <form th:action="@{/logout}" method="post" class="d-inline">
               <button class="btn btn-outline-light" type="submit">Đăng xuất</button>
