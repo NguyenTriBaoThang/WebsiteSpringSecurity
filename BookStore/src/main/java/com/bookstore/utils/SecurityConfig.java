@@ -1,6 +1,8 @@
 package com.bookstore.utils;
 
+import com.bookstore.services.CustomOAuth2UserService;
 import com.bookstore.services.CustomUserDetailServices;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -17,6 +19,9 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+    @Autowired
+    private CustomOAuth2UserService customOAuth2UserService;
+
     @Bean
     public UserDetailsService userDetailsService(){
         return new CustomUserDetailServices();
@@ -79,10 +84,11 @@ public class SecurityConfig {
                         .hasAnyAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
-                .oauth2Login(oauth2Login ->
-                        oauth2Login
-                                .loginPage("/login")
-                                .defaultSuccessUrl("/", true)
+                .oauth2Login(oauth2Login -> oauth2Login
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/", true)
+                        .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint.userService(customOAuth2UserService))
+                        .failureUrl("/login?error=true")
                 )
                 .logout(logout -> logout.logoutUrl("/logout")
                         .logoutSuccessUrl("/login")
